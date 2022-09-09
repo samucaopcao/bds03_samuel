@@ -24,9 +24,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	
 	private static final String[] PUBLIC = { "/oauth/token", "/h2-console/**" };
 	
-	private static final String[] OPERATOR_OR_ADMIN = { "/products/**", "/categories/**" };
+	private static final String[] OPERATOR_GET = { "/departments/**", "/employees/**" };
 	
-	private static final String[] ADMIN = { "/users/**" };	
 	
 	
 	// Decodifica o Token e analisa se está válido
@@ -45,9 +44,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 		
 		http.authorizeRequests()
 		.antMatchers(PUBLIC).permitAll() // Quem estiver acessando alguma rota desse perfil estão todas permitidas
-		.antMatchers(HttpMethod.GET, OPERATOR_OR_ADMIN).permitAll() // Liberado para todo mundo só o GET
-		.antMatchers(OPERATOR_OR_ADMIN).hasAnyRole("OPERATOR", "ADMIN") // As rotas "products/**", "categories/** só podem ser acessadas pelos perfis OPERATOR ou ADMIN"
-		.antMatchers(ADMIN).hasRole("ADMIN") // Só pode acessar users/ quem for ADMIN
-		.anyRequest().authenticated(); // Somente pode acessar qualquer endpoint quem estiver logado
+		.antMatchers(HttpMethod.GET, OPERATOR_GET).hasAnyRole("OPERATOR", "ADMIN") // As rotas "products/**", "categories/** só podem ser acessadas pelos perfis OPERATOR ou ADMIN"
+		.anyRequest().hasAnyRole("ADMIN"); // Somente Admin pode acessar o restante dos endpoints
 	}	
 }
